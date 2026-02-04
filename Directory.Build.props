@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <Authors>NetCore</Authors>
+    <Product>NetCore</Product>
+    <Version>0.9.0</Version>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build (backend and tests)
+        run: |
+          dotnet build --no-restore src/NetCore.Api/NetCore.Api.csproj -c Release
+          dotnet build --no-restore tests/NetCore.FinancialEngine.Tests/NetCore.FinancialEngine.Tests.csproj -c Release
+          dotnet build --no-restore tests/NetCore.Api.Tests/NetCore.Api.Tests.csproj -c Release
+
+      - name: Test
+        run: |
+          dotnet test tests/NetCore.FinancialEngine.Tests/NetCore.FinancialEngine.Tests.csproj --no-build -c Release --verbosity normal
+          dotnet test tests/NetCore.Api.Tests/NetCore.Api.Tests.csproj --no-build -c Release --verbosity normal

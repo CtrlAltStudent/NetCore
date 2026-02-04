@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetCore.Maui.Pages.DashboardPage"
+             Title="Dashboard">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label x:Name="TitleLabel" Text="Wynik operacyjny" FontSize="20" FontAttributes="Bold" />
+            <Label x:Name="PeriodLabel" Text="" FontSize="12" Opacity="0.8" />
+            <BoxView HeightRequest="1" Color="LightGray" />
+            <Label x:Name="RevenueLabel" Text="Przychody: —" />
+            <Label x:Name="CostsLabel" Text="Koszty: —" />
+            <Label x:Name="ProfitLabel" Text="Zysk netto: —" FontAttributes="Bold" />
+            <Label x:Name="MarginLabel" Text="Marża: —" />
+            <Label x:Name="MessageLabel" Text="" IsVisible="False" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

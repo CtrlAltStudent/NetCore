@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/NetCore.Api/NetCore.Api.csproj" />
+    <Project Path="src/NetCore.Domain/NetCore.Domain.csproj" />
+    <Project Path="src/NetCore.FinancialEngine/NetCore.FinancialEngine.csproj" />
+    <Project Path="src/NetCore.Infrastructure/NetCore.Infrastructure.csproj" />
+    <Project Path="src/NetCore.Maui/NetCore.Maui.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/NetCore.Api.Tests/NetCore.Api.Tests.csproj" />
+    <Project Path="tests/NetCore.FinancialEngine.Tests/NetCore.FinancialEngine.Tests.csproj" />
+  </Folder>
+</Solution>
