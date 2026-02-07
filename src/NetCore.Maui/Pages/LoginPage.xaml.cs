@@ -29,16 +29,18 @@ public partial class LoginPage : ContentPage
         try
         {
             var result = await _auth.LoginAsync(email, password);
-            if (result != null)
+            if (result.Success && result.Data != null)
             {
-                var services = Application.Current?.Handler?.MauiContext?.Services;
+                var services = App.Services ?? Application.Current?.Handler?.MauiContext?.Services;
                 var shell = services?.GetRequiredService<AppShell>();
                 if (Application.Current?.Windows.Count > 0 && shell != null)
                     Application.Current.Windows[0].Page = shell;
             }
             else
             {
-                ErrorLabel.Text = "Nieprawidłowy email lub hasło.";
+                ErrorLabel.Text = result.ErrorKind == "ConnectionError"
+                    ? "Nie można połączyć z API. Uruchom najpierw API: w folderze src\\NetCore.Api wpisz dotnet run (w osobnym oknie)."
+                    : "Nieprawidłowy email lub hasło.";
                 ErrorLabel.IsVisible = true;
             }
         }

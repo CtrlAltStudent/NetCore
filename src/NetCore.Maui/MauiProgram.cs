@@ -1,3 +1,4 @@
+using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using NetCore.Maui.Pages;
 using NetCore.Maui.Services;
@@ -21,8 +22,19 @@ public static class MauiProgram
 		builder.Logging.AddDebug();
 #endif
 
-		var baseUrl = "https://localhost:5001";
-		builder.Services.AddSingleton(_ => new HttpClient());
+		// API w tym projekcie domyślnie nasłuchuje na http://localhost:5174 (profil „http”). Jeśli uruchomisz z --launch-profile https, zmień na https://localhost:7031.
+		var baseUrl = "http://localhost:5174";
+		// Na Windows HttpClient domyślnie odrzuca certyfikat deweloperski localhost – w DEBUG akceptuj go.
+		builder.Services.AddSingleton<HttpClient>(_ =>
+		{
+#if DEBUG
+			var handler = new HttpClientHandler();
+			handler.ServerCertificateCustomValidationCallback = (_, _, _, _) => true; // akceptuj localhost dev cert
+			return new HttpClient(handler);
+#else
+			return new HttpClient();
+#endif
+		});
 		builder.Services.AddSingleton(sp => new AuthService(sp.GetRequiredService<HttpClient>(), baseUrl));
 		builder.Services.AddSingleton(sp => new ApiClient(sp.GetRequiredService<HttpClient>(), sp.GetRequiredService<AuthService>(), baseUrl));
 		builder.Services.AddTransient<LoginPage>();

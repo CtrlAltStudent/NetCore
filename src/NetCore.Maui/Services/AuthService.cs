@@ -22,22 +22,30 @@ public class AuthService
 
     public async Task<string?> GetTokenAsync() => await SecureStorage.Default.GetAsync(TokenKey);
 
-    public async Task<AuthResult?> LoginAsync(string email, string password)
+    /// <summary>Wynik logowania: Success + dane, albo błąd (ConnectionError / InvalidCredentials).</summary>
+    public class LoginResult
+    {
+        public bool Success => Data != null;
+        public AuthResult? Data { get; set; }
+        public string ErrorKind { get; set; } = ""; // "ConnectionError" | "InvalidCredentials"
+    }
+
+    public async Task<LoginResult> LoginAsync(string email, string password)
     {
         try
         {
             var response = await _http.PostAsJsonAsync($"{_baseUrl}/api/v1/auth/login", new { Email = email, Password = password });
             if (!response.IsSuccessStatusCode)
-                return null;
+                return new LoginResult { ErrorKind = "InvalidCredentials" };
             var auth = await response.Content.ReadFromJsonAsync<AuthResponse>();
             if (auth?.Token == null)
-                return null;
+                return new LoginResult { ErrorKind = "InvalidCredentials" };
             await SecureStorage.Default.SetAsync(TokenKey, auth.Token);
-            return new AuthResult { Token = auth.Token, Email = auth.Email, OrganizationId = auth.OrganizationId, Role = auth.Role };
+            return new LoginResult { Data = new AuthResult { Token = auth.Token, Email = auth.Email, OrganizationId = auth.OrganizationId, Role = auth.Role } };
         }
-        catch
+        catch (Exception)
         {
-            return null;
+            return new LoginResult { ErrorKind = "ConnectionError" };
         }
     }
 

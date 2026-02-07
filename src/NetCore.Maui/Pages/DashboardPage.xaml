@@ -14,6 +14,7 @@
             <Label x:Name="ProfitLabel" Text="Zysk netto: —" FontAttributes="Bold" />
             <Label x:Name="MarginLabel" Text="Marża: —" />
             <Label x:Name="MessageLabel" Text="" IsVisible="False" />
+            <Button x:Name="SeedButton" Text="Załaduj dane testowe" Clicked="OnSeedTestDataClicked" Margin="0,12,0,0" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

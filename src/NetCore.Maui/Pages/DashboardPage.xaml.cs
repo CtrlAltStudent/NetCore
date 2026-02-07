@@ -18,8 +18,58 @@ public partial class DashboardPage : ContentPage
         await LoadReportAsync();
     }
 
+    private async void OnSeedTestDataClicked(object? sender, EventArgs e)
+    {
+        SeedButton.IsEnabled = false;
+        try
+        {
+            // force=true — załaduj dane nawet gdy organizacja ma już okresy (zastąpi je danymi testowymi)
+            var response = await _api.PostAsJsonAsync("/api/v1/seed/test-data?force=true", new { });
+            if (response.IsSuccessStatusCode)
+            {
+                MessageLabel.IsVisible = false;
+                await LoadReportAsync();
+            }
+            else
+            {
+                var body = await response.Content.ReadAsStringAsync();
+                var msg = GetErrorMessage((int)response.StatusCode, body);
+                MessageLabel.Text = msg;
+                MessageLabel.IsVisible = true;
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageLabel.Text = "Błąd połączenia: " + ex.Message;
+            MessageLabel.IsVisible = true;
+        }
+        finally
+        {
+            SeedButton.IsEnabled = true;
+        }
+    }
+
+    private static string GetErrorMessage(int statusCode, string body)
+    {
+        if (statusCode == 401)
+            return "Sesja wygasła. Wyloguj się i zaloguj ponownie.";
+        if (statusCode == 404)
+            return "Błąd 404: endpoint nie znaleziony. Zatrzymaj API (Ctrl+C), wykonaj w folderze NetCore.Api: dotnet build, potem dotnet run. W przeglądarce sprawdź http://localhost:5174/swagger — czy jest POST /api/v1/seed/test-data.";
+        try
+        {
+            var json = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(body);
+            if (json.TryGetProperty("message", out var msg))
+                return msg.GetString() ?? body;
+        }
+        catch { /* ignore */ }
+        if (!string.IsNullOrWhiteSpace(body) && body.Length <= 300)
+            return body;
+        return $"Błąd ({statusCode}). " + (body.Length > 200 ? body[..200] + "…" : body);
+    }
+
     private async Task LoadReportAsync()
     {
+        MessageLabel.IsVisible = false;
         try
         {
             var periods = await _api.GetFromJsonAsync<List<PeriodDto>>("/api/v1/periods");

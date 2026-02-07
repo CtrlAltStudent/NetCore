@@ -1,12 +1,18 @@
 using Microsoft.Extensions.DependencyInjection;
 using NetCore.Maui.Pages;
+using NetCore.Maui.Services;
 
 namespace NetCore.Maui;
 
 public partial class AppShell : Shell
 {
-	public AppShell(IServiceProvider serviceProvider)
+	private readonly IServiceProvider _serviceProvider;
+	private readonly AuthService _auth;
+
+	public AppShell(IServiceProvider serviceProvider, AuthService auth)
 	{
+		_serviceProvider = serviceProvider;
+		_auth = auth;
 		InitializeComponent();
 		var dashboard = serviceProvider.GetRequiredService<DashboardPage>();
 		var channels = serviceProvider.GetRequiredService<ChannelsPage>();
@@ -26,5 +32,12 @@ public partial class AppShell : Shell
 				new ShellContent { Content = bonuses, Route = "Bonuses", Title = "Premie" }
 			}
 		});
+	}
+
+	private async void OnLogoutClicked(object? sender, EventArgs e)
+	{
+		await _auth.LogoutAsync();
+		if (Application.Current?.Windows.Count > 0)
+			Application.Current.Windows[0].Page = new LoginPage(_auth);
 	}
 }

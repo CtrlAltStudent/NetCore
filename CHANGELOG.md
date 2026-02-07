@@ -9,6 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 (No changes yet.)
 
+## [1.0.1] - 2026-02-07
+
+### Fixed
+
+- **MAUI (Windows):** Błąd inicjalizacji przy starcie – kontener DI był niedostępny (`Handler?.MauiContext?.Services` null). Aplikacja korzysta teraz z `App.Services` (wstrzyknięty `IServiceProvider` w `App`).
+- **MAUI:** Po udanym logowaniu brak przejścia do Dashboardu – `LoginPage` używa `App.Services` do pobrania `AppShell`.
+- **MAUI:** Logowanie na Windows z HTTPS – `HttpClient` akceptuje certyfikat deweloperski localhost (tylko w DEBUG).
+- **MAUI:** Komunikat „Nieprawidłowy email lub hasło” przy błędzie połączenia z API – rozróżnienie: osobny komunikat przy braku połączenia i przy 401.
+- **MAUI:** Sesja wygasła bez możliwości ponownego logowania – weryfikacja tokenu przy starcie (401 → wylogowanie, ekran logowania) oraz przycisk **Wyloguj** w Shell.
+
+### Added
+
+- **API:** Endpoint `POST /api/v1/seed/test-data` – wypełnienie organizacji danymi testowymi (okres, kanały, działy, pracownicy, przychody, koszty). Parametr `?force=true` zastępuje istniejące dane.
+- **MAUI:** Przycisk „Załaduj dane testowe” na Dashboardzie oraz czytelne komunikaty błędów (404, 401, błąd połączenia).
+- **Dokumentacja:** `docs/INSTRUKCJA-URUCHOMIENIA.md` – szczegółowa instrukcja uruchomienia; sekcja „Typowe problemy” (blokada plików, 404 seed, błąd inicjalizacji).
+
 ## [0.9.0-beta.1] - (Beta 1.0)
 
 ### Added
@@ -40,7 +56,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (Placeholder for first stable release)
 
-[Unreleased]: https://github.com/CtrlAltStudent/NetCore/compare/v0.9.0-beta.1...HEAD
+[Unreleased]: https://github.com/CtrlAltStudent/NetCore/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/CtrlAltStudent/NetCore/compare/v0.9.0-beta.1...v1.0.1
 [0.9.0-beta.1]: https://github.com/CtrlAltStudent/NetCore/releases/tag/v0.9.0-beta.1
 [0.9.0]: https://github.com/CtrlAltStudent/NetCore/compare/v0.9.0-beta.1...v0.9.0
 [1.0.0]: https://github.com/CtrlAltStudent/NetCore/releases/tag/v1.0.0
