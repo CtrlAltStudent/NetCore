@@ -1,23 +1,23 @@
-using Microsoft.Extensions.DependencyInjection;
 using NetCore.Maui.Services;
 
 namespace NetCore.Maui.Pages;
 
-public partial class LoginPage : ContentPage
+public partial class RegisterPage : ContentPage
 {
     private readonly AuthService _auth;
 
-    public LoginPage(AuthService auth)
+    public RegisterPage(AuthService auth)
     {
         _auth = auth;
         InitializeComponent();
     }
 
-    private async void OnLoginClicked(object? sender, EventArgs e)
+    private async void OnRegisterClicked(object? sender, EventArgs e)
     {
         ErrorLabel.IsVisible = false;
         var email = EmailEntry.Text?.Trim() ?? "";
         var password = PasswordEntry.Text ?? "";
+        var orgName = OrganizationEntry.Text?.Trim() ?? "";
         if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
         {
             ErrorLabel.Text = "Wpisz email i hasło.";
@@ -25,10 +25,10 @@ public partial class LoginPage : ContentPage
             return;
         }
 
-        LoginButton.IsEnabled = false;
+        RegisterButton.IsEnabled = false;
         try
         {
-            var result = await _auth.LoginAsync(email, password);
+            var result = await _auth.RegisterAsync(email, password, orgName);
             if (result.Success && result.Data != null)
             {
                 var services = App.Services ?? Application.Current?.Handler?.MauiContext?.Services;
@@ -39,20 +39,20 @@ public partial class LoginPage : ContentPage
             else
             {
                 ErrorLabel.Text = result.ErrorKind == "ConnectionError"
-                    ? "Nie można połączyć z API. Uruchom najpierw API: w folderze src\\NetCore.Api wpisz dotnet run (w osobnym oknie)."
-                    : "Nieprawidłowy email lub hasło.";
+                    ? "Nie można połączyć z API. Uruchom API (dotnet run w folderze NetCore.Api)."
+                    : "Rejestracja nie powiodła się (np. email już zajęty).";
                 ErrorLabel.IsVisible = true;
             }
         }
         finally
         {
-            LoginButton.IsEnabled = true;
+            RegisterButton.IsEnabled = true;
         }
     }
 
-    private void OnRegisterClicked(object? sender, EventArgs e)
+    private void OnBackClicked(object? sender, EventArgs e)
     {
         if (Application.Current?.Windows.Count > 0)
-            Application.Current.Windows[0].Page = new RegisterPage(_auth);
+            Application.Current.Windows[0].Page = new LoginPage(_auth);
     }
 }

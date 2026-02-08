@@ -93,4 +93,46 @@ public class ReportsController : ControllerBase
         var result = await GetMarginResultAsync(periodId, ct);
         return Ok(result.ByDepartment);
     }
+
+    /// <summary>Szereg czasowy: wynik operacyjny dla N ostatnich okresów (do wykresów).</summary>
+    [HttpGet("series")]
+    public async Task<ActionResult<IEnumerable<ReportSeriesItem>>> GetSeries([FromQuery] int count = 12, CancellationToken ct = default)
+    {
+        if (count < 1 || count > 24) count = 12;
+        var periods = await _db.Periods
+            .Where(p => p.OrganizationId == OrgId)
+            .OrderByDescending(p => p.StartDate)
+            .Take(count)
+            .Select(p => new { p.Id, p.Label, p.StartDate, p.EndDate })
+            .ToListAsync(ct);
+        var list = new List<ReportSeriesItem>();
+        foreach (var p in periods.OrderBy(x => x.StartDate))
+        {
+            var result = await GetMarginResultAsync(p.Id, ct);
+            list.Add(new ReportSeriesItem
+            {
+                PeriodId = p.Id,
+                Label = p.Label,
+                StartDate = p.StartDate,
+                EndDate = p.EndDate,
+                TotalRevenue = result.TotalRevenue,
+                TotalCosts = result.TotalCosts,
+                OperatingProfit = result.OperatingProfit,
+                MarginPercent = result.MarginPercent
+            });
+        }
+        return Ok(list);
+    }
+}
+
+public class ReportSeriesItem
+{
+    public Guid PeriodId { get; set; }
+    public string Label { get; set; } = "";
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public decimal TotalRevenue { get; set; }
+    public decimal TotalCosts { get; set; }
+    public decimal OperatingProfit { get; set; }
+    public decimal MarginPercent { get; set; }
 }

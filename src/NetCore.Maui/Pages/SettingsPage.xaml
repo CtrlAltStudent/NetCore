@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetCore.Maui.Pages.SettingsPage"
+             Title="Ustawienia">
+    <ScrollView Margin="20">
+        <VerticalStackLayout Spacing="16">
+            <Label Text="Adres API (base URL)" FontAttributes="Bold" />
+            <Entry x:Name="BaseUrlEntry" Placeholder="np. http://localhost:5174" Keyboard="Url" />
+            <Label x:Name="HintLabel" Text="Ustaw adres serwera API. Po zmianie może być wymagane ponowne logowanie."
+                   FontSize="12" TextColor="Gray" />
+            <Button Text="Zapisz" Clicked="OnSaveClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

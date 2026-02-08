@@ -4,6 +4,24 @@ Po reinstalacji środowiska lub nowym sklonowaniu repozytorium wykonaj poniższe
 
 ---
 
+## Użycie jak zwykłej aplikacji (exe, bez konsoli)
+
+Aplikację możesz uruchamiać **dwuklikiem pliku exe**, tak jak inne programy w Windows (bez otwierania terminala).
+
+1. **Jednorazowo zbuduj exe** (w terminalu):
+   ```powershell
+   cd c:\Users\mskaw\Desktop\NetCore\src\NetCore.Maui
+   dotnet publish -f net10.0-windows10.0.19041.0 -c Release -p:PublishProfile=win-selfcontained
+   ```
+2. **Gdzie jest exe:**  
+   `src\NetCore.Maui\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\NetCore.Maui.exe`
+3. **Uruchomienie:** Dwuklik **NetCore.Maui.exe** w Eksploratorze (lub utwórz skrót na pulpicie do tego pliku). Otworzy się okno aplikacji **bez konsoli**.
+4. **Warunek:** Aplikacja łączy się z API – **najpierw uruchom API** (w osobnym terminalu: `cd src\NetCore.Api` → `dotnet run`). Adres API ustawiasz w aplikacji w zakładce **Ustawienia** (domyślnie http://localhost:5174).
+
+Szczegóły budowania i wymagania: sekcje 1–5 poniżej.
+
+---
+
 ## 1. Wymagania (co musi być zainstalowane)
 
 ### 1.1 .NET 10 SDK
@@ -156,13 +174,7 @@ src\NetCore.Api\Properties\launchSettings.json
 
 ### 5.1 Adres API w MAUI
 
-W pliku `src\NetCore.Maui\MauiProgram.cs` jest ustawiony adres API:
-
-```csharp
-var baseUrl = "https://localhost:7031";
-```
-
-Powinien być **taki sam** jak adres HTTPS z `launchSettings.json` (domyślnie 7031). Jeśli uruchamiasz API na innym porcie, zmień `baseUrl` w `MauiProgram.cs`.
+Adres API ustawiasz **w aplikacji** w zakładce **Ustawienia** (zapis w Preferences). Domyślnie aplikacja używa **http://localhost:5174** – taki sam jak profil HTTP w `launchSettings.json`. Jeśli API działa na innym porcie lub serwerze, wpisz adres w Ustawieniach i zapisz.
 
 ### 5.2 Uruchom aplikację
 
@@ -179,13 +191,55 @@ Alternatywnie (jeśli projekt jest już zbudowany):
 dotnet run -f net10.0-windows10.0.19041.0
 ```
 
-Powinno otworzyć się okno aplikacji NetCore (ekran logowania).
+**Ważne:** Otworzy się **osobne okno** (poza terminalem / Cursorem) – to jest okno aplikacji NetCore (ekran logowania lub „Ładowanie…”). Czarne lub puste pole **w środku Cursora** to nie jest aplikacja – to panel edytora lub konsoli.
 
-### 5.3 Uruchomienie z poziomu Visual Studio / Cursor
+### 5.3 Uruchomienie z poziomu Cursora (VS Code)
+
+1. **Uruchom API** (w jednym terminalu):  
+   `cd src\NetCore.Api` → `dotnet run`  
+   Zostaw ten terminal otwarty.
+
+2. **Uruchom aplikację MAUI:**  
+   - W Cursorze otwórz **Run and Debug** (Ctrl+Shift+D).  
+   - Na liście konfiguracji wybierz **„NetCore.Maui (Windows)”** (nie „.NET Core Launch (testy)” – to uruchamia tylko testy).  
+   - Naciśnij **F5** lub zielony przycisk „Run”.  
+   - Zostanie zbudowany projekt MAUI, a potem **otworzy się osobne okno Windows** z aplikacją (logowanie lub „Ładowanie…”).  
+   - W samym Cursorze w panelu „DEBUG CONSOLE” mogą być logi – **okno aplikacji jest poza Cursorem**.
+
+3. **Jeśli zamiast aplikacji uruchamiają się testy:**  
+   Upewnij się, że w konfiguracji uruchomienia wybrane jest **„NetCore.Maui (Windows)”**, a nie „.NET Core Launch (testy)”.
+
+### 5.4 Visual Studio
 
 - Otwórz rozwiązanie (np. `NetCore.slnx`).
 - Ustaw **NetCore.Api** jako projekt startowy, uruchom (F5) – API będzie działać.
 - Potem ustaw **NetCore.Maui** jako projekt startowy, w konfiguracji uruchomienia wybierz **Windows Machine** i uruchom (F5).
+
+### 5.5 Uruchomienie wersji desktopowej (exe, bez konsoli)
+
+Możesz zbudować pojedynczy plik exe i uruchamiać aplikację dwuklikiem (bez otwierania terminala).
+
+1. **Publikacja (Release, self-contained):**
+   ```powershell
+   cd c:\Users\mskaw\Desktop\NetCore\src\NetCore.Maui
+   dotnet publish -f net10.0-windows10.0.19041.0 -c Release -p:PublishProfile=win-selfcontained
+   ```
+   Lub bez profilu (jawne parametry):
+   ```powershell
+   dotnet publish -f net10.0-windows10.0.19041.0 -c Release -p:RuntimeIdentifier=win-x64 -p:SelfContained=true -p:PublishSingleFile=true
+   ```
+
+2. **Gdzie jest exe:**  
+   Katalog z plikiem wykonywalnym:
+   ```
+   src\NetCore.Maui\bin\Release\net10.0-windows10.0.19041.0\win-x64\publish\
+   ```
+   Plik: **NetCore.Maui.exe**. Możesz skopiować cały folder `publish` na inny komputer z Windows – aplikacja jest self-contained (nie wymaga osobnej instalacji .NET).
+
+3. **Uruchomienie:**  
+   Dwuklik **NetCore.Maui.exe** w Eksploratorze (lub skrót na pulpicie do tego pliku). Okno aplikacji otworzy się bez konsoli.
+
+4. **Uwaga:** Aplikacja desktopowa **wymaga działającego API**. Przed uruchomieniem exe uruchom API (np. `dotnet run` w `src\NetCore.Api` albo na serwerze). Adres API ustawiasz w aplikacji w zakładce **Ustawienia** (domyślnie http://localhost:5174).
 
 ---
 
@@ -232,8 +286,9 @@ Powinno otworzyć się okno aplikacji NetCore (ekran logowania).
 | 3 | Zainstaluj i uruchom PostgreSQL, utwórz bazę `NetCore` |
 | 4 | W `src/NetCore.Api/appsettings.json` ustaw `ConnectionStrings:DefaultConnection` |
 | 5 | `cd src/NetCore.Api` → `dotnet run` (zostaw włączone) |
-| 6 | W drugim terminalu: `cd src/NetCore.Maui` → `dotnet build -t:Run -f net10.0-windows10.0.19041.0` |
-| 7 | W przeglądarce: https://localhost:7031/swagger – zarejestruj użytkownika (POST /api/v1/auth/register) |
+| 6 | **Opcja A:** W drugim terminalu: `cd src/NetCore.Maui` → `dotnet run -f net10.0-windows10.0.19041.0` |
+| 6b | **Opcja B (exe jak zwykła aplikacja):** Jednorazowo `dotnet publish -f net10.0-windows10.0.19041.0 -c Release -p:PublishProfile=win-selfcontained` w `src/NetCore.Maui`, potem dwuklik `bin\Release\...\publish\NetCore.Maui.exe` |
+| 7 | W przeglądarce: http://localhost:5174/swagger – zarejestruj użytkownika (POST /api/v1/auth/register) lub zarejestruj się w aplikacji (przycisk Zarejestruj) |
 | 8 | Zaloguj się w aplikacji MAUI emailem i hasłem |
 
 ---
@@ -241,12 +296,13 @@ Powinno otworzyć się okno aplikacji NetCore (ekran logowania).
 ## 8. Typowe problemy
 
 - **„Plik jest zablokowany przez: NetCore.Api (…)” przy `dotnet run` w NetCore.Api** – oznacza to, że **API już działa** w innym oknie terminala (np. wcześniej uruchomione i nie zamknięte). Nie uruchamiaj drugiej kopii. Albo **użyj tej działającej instancji** (aplikacja MAUI się z nią połączy), albo **zatrzymaj ją**: w oknie PowerShell/CMD, gdzie API działa, naciśnij **Ctrl+C**, a potem w bieżącym oknie ponownie wpisz `dotnet run`. Możesz też zakończyć proces z Menedżera zadań (szukaj „NetCore.Api”) lub w PowerShell: `Stop-Process -Id 16868 -Force` (podstaw numer PID z komunikatu błędu).
-- **„Błąd inicjalizacji” w okienku MAUI** – na Windows kontener DI bywał niedostępny przy starcie. W projekcie jest to naprawione (użycie `App.Services`). Jeśli nadal widzisz błąd, w treści komunikatu sprawdź dokładny opis (np. brak połączenia z API). Upewnij się, że **najpierw uruchomiono API** (`dotnet run` w `NetCore.Api`), a w `MauiProgram.cs` jest ustawiony właściwy `baseUrl` (np. `https://localhost:7031`).
+- **„Błąd inicjalizacji” w okienku MAUI** – na Windows kontener DI bywał niedostępny przy starcie. W projekcie jest to naprawione (użycie `App.Services`). Jeśli nadal widzisz błąd, w treści komunikatu sprawdź dokładny opis (np. brak połączenia z API). Upewnij się, że **najpierw uruchomiono API** (`dotnet run` w `NetCore.Api`), a w aplikacji w zakładce **Ustawienia** jest ustawiony prawidłowy adres API (domyślnie http://localhost:5174).
 - **„Nie można odnaleźć katalogu zestawu Android SDK”** – dotyczy tylko budowania targetu Android. Używaj budowania tylko dla Windows: `dotnet build -f net10.0-windows10.0.19041.0` w projekcie MAUI.
 - **Błąd połączenia z bazą** – sprawdź czy PostgreSQL działa, connection string w `appsettings.json` oraz czy baza `NetCore` istnieje.
-- **Aplikacja MAUI nie łączy się z API** – sprawdź czy `baseUrl` w `MauiProgram.cs` jest taki sam jak adres z `launchSettings.json` (np. `https://localhost:7031`) i czy API rzeczywiście działa w tym samym momencie.
+- **Aplikacja MAUI nie łączy się z API** – w aplikacji otwórz zakładkę **Ustawienia** i upewnij się, że adres API jest prawidłowy (np. http://localhost:5174 gdy API działa na HTTP). Sprawdź też, czy API rzeczywiście działa (np. http://localhost:5174/swagger w przeglądarce).
 - **Błąd 404 przy „Załaduj dane testowe”** – działająca instancja API została uruchomiona **przed** dodaniem endpointu seed. Zatrzymaj API (Ctrl+C w terminalu, gdzie działa), w folderze `src/NetCore.Api` wykonaj `dotnet run` ponownie. W przeglądarce wejdź na http://localhost:5174/swagger i sprawdź, czy na liście jest **POST /api/v1/seed/test-data**.
 - **Certyfikat HTTPS** – przy pierwszym wejściu na https://localhost:7031 przeglądarka może ostrzegać o certyfikacie deweloperskim; w środowisku lokalnym zwykle można to zaakceptować.
+- **Publish exe: „Nie można znaleźć pakietu Microsoft.NETCore.App.Runtime.Mono.win-x64”** – upewnij się, że masz zainstalowany .NET 10 SDK (`dotnet --version` = 10.x) oraz workload MAUI (`dotnet workload install maui`). Jeśli błąd nadal występuje, uruchamiaj aplikację z terminala: `dotnet run -f net10.0-windows10.0.19041.0` w folderze `src\NetCore.Maui` – okno aplikacji i tak otworzy się bez konsoli w tle (konsola zostaje w terminalu).
 
 ---
 

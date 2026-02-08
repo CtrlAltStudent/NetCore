@@ -2,10 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NetCore.Maui.Pages.BootstrapPage"
-             Title="NetCore">
+             Title="NetCore"
+             BackgroundColor="White">
 
-    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-        <ActivityIndicator IsRunning="True" />
-        <Label Text="Ładowanie..." Margin="0,12,0,0" />
+    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center" Spacing="12">
+        <ActivityIndicator IsRunning="True" Color="Black" />
+        <Label x:Name="StatusLabel" Text="Ładowanie..." TextColor="Black" />
     </VerticalStackLayout>
 </ContentPage>

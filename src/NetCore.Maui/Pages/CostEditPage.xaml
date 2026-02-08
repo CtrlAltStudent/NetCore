@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetCore.Maui.Pages.CostEditPage"
+             Title="Koszt">
+    <ScrollView Margin="20">
+        <VerticalStackLayout Spacing="12">
+            <Label Text="Okres" />
+            <Picker x:Name="PeriodPicker" Title="Okres" />
+            <Label Text="Typ" />
+            <Picker x:Name="TypePicker" Title="Typ" />
+            <Label Text="Nazwa" />
+            <Entry x:Name="NameEntry" Placeholder="Nazwa kosztu" />
+            <Label Text="Kwota" />
+            <Entry x:Name="AmountEntry" Keyboard="Numeric" Placeholder="0" />
+            <Label Text="Waluta" />
+            <Entry x:Name="CurrencyEntry" Text="PLN" />
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12" Margin="0,20,0,0">
+                <Button Grid.Column="0" Text="Anuluj" Clicked="OnCancelClicked" />
+                <Button Grid.Column="1" Text="Zapisz" Clicked="OnSaveClicked" />
+            </Grid>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

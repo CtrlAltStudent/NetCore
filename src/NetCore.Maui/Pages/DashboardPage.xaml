@@ -2,19 +2,52 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NetCore.Maui.Pages.DashboardPage"
-             Title="Dashboard">
+             Title="Dashboard"
+             BackgroundColor="White">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="16">
             <Label x:Name="TitleLabel" Text="Wynik operacyjny" FontSize="20" FontAttributes="Bold" />
-            <Label x:Name="PeriodLabel" Text="" FontSize="12" Opacity="0.8" />
+            <Picker x:Name="PeriodPicker" Title="Okres" SelectedIndexChanged="OnPeriodPickerSelectedIndexChanged" />
+            <ActivityIndicator x:Name="ReportLoadingIndicator" IsRunning="False" IsVisible="False" />
+            <Label x:Name="PeriodLabel" Text="" FontSize="12" Opacity="0.8" IsVisible="False" />
             <BoxView HeightRequest="1" Color="LightGray" />
-            <Label x:Name="RevenueLabel" Text="Przychody: —" />
-            <Label x:Name="CostsLabel" Text="Koszty: —" />
-            <Label x:Name="ProfitLabel" Text="Zysk netto: —" FontAttributes="Bold" />
-            <Label x:Name="MarginLabel" Text="Marża: —" />
+
+            <Frame BorderColor="LightGray" Padding="12" Margin="0,4">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Przychody" FontSize="12" Opacity="0.8" />
+                    <Label x:Name="RevenueLabel" Text="—" />
+                </VerticalStackLayout>
+            </Frame>
+            <Frame BorderColor="LightGray" Padding="12" Margin="0,4">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Koszty" FontSize="12" Opacity="0.8" />
+                    <Label x:Name="CostsLabel" Text="—" />
+                </VerticalStackLayout>
+            </Frame>
+            <Frame BorderColor="LightGray" Padding="12" Margin="0,4">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Zysk netto" FontSize="12" Opacity="0.8" />
+                    <Label x:Name="ProfitLabel" Text="—" FontAttributes="Bold" />
+                </VerticalStackLayout>
+            </Frame>
+            <Frame BorderColor="LightGray" Padding="12" Margin="0,4">
+                <VerticalStackLayout Spacing="4">
+                    <Label Text="Marża" FontSize="12" Opacity="0.8" />
+                    <Label x:Name="MarginLabel" Text="—" />
+                </VerticalStackLayout>
+            </Frame>
+
             <Label x:Name="MessageLabel" Text="" IsVisible="False" />
             <Button x:Name="SeedButton" Text="Załaduj dane testowe" Clicked="OnSeedTestDataClicked" Margin="0,12,0,0" />
+            <Button x:Name="ExportButton" Text="Eksportuj raport (CSV)" Clicked="OnExportClicked" Margin="0,8,0,0" />
+
+            <BoxView HeightRequest="1" Color="LightGray" Margin="0,16,0,0" />
+            <Label Text="Trend (ostatnie okresy)" FontSize="16" FontAttributes="Bold" Margin="0,8,0,0" />
+            <ActivityIndicator x:Name="ChartLoadingIndicator" IsRunning="False" IsVisible="False" />
+            <Label x:Name="ChartNoDataLabel" Text="Brak danych do wykresu." IsVisible="False" />
+            <Label x:Name="ChartUnsupportedLabel" Text="Wykresy niedostępne na Windows." IsVisible="False" />
+            <ContentView x:Name="TrendChartHost" HeightRequest="240" IsVisible="False" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

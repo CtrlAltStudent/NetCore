@@ -13,11 +13,10 @@ public partial class BootstrapPage : ContentPage
     protected override async void OnAppearing()
     {
         base.OnAppearing();
-        // Na Windows Handler?.MauiContext?.Services bywa null przy pierwszym OnAppearing – użyj App.Services.
         var services = App.Services ?? Handler?.MauiContext?.Services;
         if (services == null)
         {
-            ShowError("Błąd inicjalizacji: brak kontenera usług. Uruchom aplikację ponownie.");
+            SetErrorContent("Błąd inicjalizacji: brak kontenera usług. Uruchom aplikację ponownie.");
             return;
         }
         try
@@ -25,49 +24,70 @@ public partial class BootstrapPage : ContentPage
             var auth = services.GetRequiredService<AuthService>();
             var loggedIn = await auth.IsLoggedInAsync();
             var window = Application.Current?.Windows.Count > 0 ? Application.Current!.Windows[0] : null;
-            if (window == null) return;
+            if (window == null)
+            {
+                SetErrorContent("Brak okna aplikacji.");
+                return;
+            }
 
             if (loggedIn)
             {
-                // Zweryfikuj, czy token jest jeszcze ważny (np. nie wygasł). Przy 401 traktuj jako wylogowanie.
                 var api = services.GetRequiredService<ApiClient>();
                 var check = await api.GetAsync("/api/v1/periods");
                 if (check.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     await auth.LogoutAsync();
-                    window.Page = new LoginPage(auth);
+                    SetWindowPage(window, new LoginPage(auth));
                     return;
                 }
-                window.Page = services.GetRequiredService<AppShell>();
+                SetWindowPage(window, services.GetRequiredService<AppShell>());
             }
             else
             {
-                window.Page = new LoginPage(auth);
+                SetWindowPage(window, new LoginPage(auth));
             }
         }
         catch (Exception ex)
         {
-            ShowError("Błąd inicjalizacji: " + ex.Message);
+            SetErrorContent("Błąd inicjalizacji: " + ex.Message);
         }
     }
 
-    private void ShowError(string message)
+    /// <summary>Pokazuje błąd na tej samej stronie (bez zamiany okna – unikamy crashy na Windows).</summary>
+    public void SetErrorContent(string message)
     {
-        if (Application.Current?.Windows.Count > 0)
+        MainThread.BeginInvokeOnMainThread(() =>
         {
-            Application.Current.Windows[0].Page = new ContentPage
+            Content = new VerticalStackLayout
             {
-                Content = new VerticalStackLayout
+                VerticalOptions = LayoutOptions.Center,
+                HorizontalOptions = LayoutOptions.Center,
+                Padding = 24,
+                BackgroundColor = Colors.White,
+                Children =
                 {
-                    VerticalOptions = LayoutOptions.Center,
-                    HorizontalOptions = LayoutOptions.Center,
-                    Padding = 24,
-                    Children =
-                    {
-                        new Label { Text = message, TextColor = Colors.Red, MaxLines = 10 }
-                    }
+                    new Label { Text = message, TextColor = Colors.Red, MaxLines = 15 }
                 }
             };
-        }
+        });
+    }
+
+    /// <summary>Ustawia stronę okna na wątku UI; przy błędzie pokazuje komunikat na stronie bootstrap.</summary>
+    private void SetWindowPage(Window window, Page page)
+    {
+        if (page is ContentPage cp && cp.BackgroundColor == Colors.Transparent)
+            cp.BackgroundColor = Colors.White;
+        var fallback = this;
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            try
+            {
+                window.Page = page;
+            }
+            catch (Exception ex)
+            {
+                fallback.SetErrorContent("Nie udało się przełączyć strony: " + ex.Message);
+            }
+        });
     }
 }

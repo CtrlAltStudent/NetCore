@@ -6,12 +6,12 @@ public class AuthService
 {
     private const string TokenKey = "NetCore_JwtToken";
     private readonly HttpClient _http;
-    private readonly string _baseUrl;
+    private readonly ApiBaseUrlService _baseUrlService;
 
-    public AuthService(HttpClient http, string baseUrl)
+    public AuthService(HttpClient http, ApiBaseUrlService baseUrlService)
     {
         _http = http;
-        _baseUrl = baseUrl.TrimEnd('/');
+        _baseUrlService = baseUrlService;
     }
 
     public async Task<bool> IsLoggedInAsync()
@@ -34,7 +34,27 @@ public class AuthService
     {
         try
         {
-            var response = await _http.PostAsJsonAsync($"{_baseUrl}/api/v1/auth/login", new { Email = email, Password = password });
+            var response = await _http.PostAsJsonAsync($"{_baseUrlService.GetBaseUrl()}/api/v1/auth/login", new { Email = email, Password = password });
+            if (!response.IsSuccessStatusCode)
+                return new LoginResult { ErrorKind = "InvalidCredentials" };
+            var auth = await response.Content.ReadFromJsonAsync<AuthResponse>();
+            if (auth?.Token == null)
+                return new LoginResult { ErrorKind = "InvalidCredentials" };
+            await SecureStorage.Default.SetAsync(TokenKey, auth.Token);
+            return new LoginResult { Data = new AuthResult { Token = auth.Token, Email = auth.Email, OrganizationId = auth.OrganizationId, Role = auth.Role } };
+        }
+        catch (Exception)
+        {
+            return new LoginResult { ErrorKind = "ConnectionError" };
+        }
+    }
+
+    /// <summary>Rejestracja nowego użytkownika i organizacji. Przy sukcesie zapisuje token i zwraca dane jak przy logowaniu.</summary>
+    public async Task<LoginResult> RegisterAsync(string email, string password, string organizationName)
+    {
+        try
+        {
+            var response = await _http.PostAsJsonAsync($"{_baseUrlService.GetBaseUrl()}/api/v1/auth/register", new { Email = email, Password = password, OrganizationName = organizationName ?? "" });
             if (!response.IsSuccessStatusCode)
                 return new LoginResult { ErrorKind = "InvalidCredentials" };
             var auth = await response.Content.ReadFromJsonAsync<AuthResponse>();

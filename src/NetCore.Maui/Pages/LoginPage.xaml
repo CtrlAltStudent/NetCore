@@ -2,9 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NetCore.Maui.Pages.LoginPage"
-             Title="NetCore - Logowanie">
+             Title="NetCore - Logowanie"
+             BackgroundColor="White">
 
     <VerticalStackLayout Padding="24" Spacing="16" VerticalOptions="Center">
+        <Image Source="netcore_logo.png" WidthRequest="120" HeightRequest="120" HorizontalOptions="Center" />
         <Label Text="NetCore" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center" />
         <Label Text="Analytics e-commerce" FontSize="14" HorizontalOptions="Center" Opacity="0.8" />
         <BoxView HeightRequest="24" Color="Transparent" />
@@ -12,5 +14,6 @@
         <Entry x:Name="PasswordEntry" Placeholder="Hasło" IsPassword="True" />
         <Label x:Name="ErrorLabel" Text="" TextColor="Red" IsVisible="False" />
         <Button x:Name="LoginButton" Text="Zaloguj" Clicked="OnLoginClicked" />
+        <Button x:Name="RegisterButton" Text="Zarejestruj" Clicked="OnRegisterClicked" />
     </VerticalStackLayout>
 </ContentPage>

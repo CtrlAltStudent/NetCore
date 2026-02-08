@@ -2,12 +2,30 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NetCore.Maui.Pages.ReportsPage"
-             Title="Raporty">
+             Title="Raporty"
+             BackgroundColor="White">
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="12">
             <Picker x:Name="PeriodPicker" Title="Okres" />
+            <Button x:Name="ExportButton" Text="Eksportuj raport (CSV)" Clicked="OnExportClicked" />
             <Label x:Name="MarginSummary" Text="" />
+            <BoxView HeightRequest="1" Color="LightGray" />
+
+            <!-- Trend w czasie -->
+            <Label Text="Trend w czasie" FontSize="16" FontAttributes="Bold" />
+            <Picker x:Name="SeriesCountPicker" Title="Liczba okresów" SelectedIndexChanged="OnSeriesCountChanged" />
+            <ActivityIndicator x:Name="TrendLoadingIndicator" IsRunning="False" IsVisible="False" />
+            <Label x:Name="TrendNoDataLabel" Text="Brak danych do wykresu." IsVisible="False" />
+            <Label x:Name="ChartsUnsupportedLabel" Text="Wykresy niedostępne na Windows." IsVisible="False" />
+            <ContentView x:Name="TrendChartHost" HeightRequest="240" IsVisible="False" />
+
+            <BoxView HeightRequest="1" Color="LightGray" />
+            <Label Text="Przychody per kanał (wybrany okres)" FontAttributes="Bold" />
+            <ActivityIndicator x:Name="PieLoadingIndicator" IsRunning="False" IsVisible="False" />
+            <Label x:Name="PieNoDataLabel" Text="Brak danych do wykresu." IsVisible="False" />
+            <ContentView x:Name="PieChartHost" HeightRequest="220" IsVisible="False" />
+
             <BoxView HeightRequest="1" Color="LightGray" />
             <Label Text="Marża per kanał" FontAttributes="Bold" />
             <CollectionView x:Name="ByChannelList">

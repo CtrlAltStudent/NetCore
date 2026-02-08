@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetCore.Maui.Pages.BonusRulesPage"
+             Title="Reguły premii">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Dodaj" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="Auto,*">
+        <VerticalStackLayout Grid.Row="0" Margin="20,8" Spacing="4">
+            <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" />
+            <Label x:Name="MessageLabel" Text="" IsVisible="False" />
+        </VerticalStackLayout>
+        <CollectionView x:Name="List" Grid.Row="1" Margin="20,0" SelectionChanged="OnSelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="12" Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                <Label Text="{Binding FormulaTypeName}" FontAttributes="Bold" />
+                                <Label Text="{Binding DepartmentName}" FontSize="12" Opacity="0.8" />
+                                <Label Text="{Binding ParametersPreview}" FontSize="11" Opacity="0.7" />
+                                <Label Text="{Binding IsActiveText}" FontSize="11" />
+                            </VerticalStackLayout>
+                            <Button Grid.Column="1" Text="Usuń" BackgroundColor="Red" TextColor="White" Clicked="OnDeleteClicked" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

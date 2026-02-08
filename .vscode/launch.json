@@ -2,10 +2,18 @@
     "version": "0.2.0",
     "configurations": [
         {
-            // Use IntelliSense to find out which attributes exist for C# debugging
-            // Use hover for the description of the existing attributes
-            // For further information visit https://github.com/dotnet/vscode-csharp/blob/main/debugger-launchjson.md
-            "name": ".NET Core Launch (console)",
+            "name": "NetCore.Maui (Windows)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build-maui",
+            "program": "${workspaceFolder}/src/NetCore.Maui/bin/Debug/net10.0-windows10.0.19041.0/win-x64/NetCore.Maui.exe",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/NetCore.Maui",
+            "console": "internalConsole",
+            "stopAtEntry": false
+        },
+        {
+            "name": ".NET Core Launch (testy)",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",

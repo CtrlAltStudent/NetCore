@@ -9,6 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 (No changes yet.)
 
+## [1.0.2] - 2026-02-06
+
+### Added
+
+- **API:** Endpoint `GET /api/v1/reports/series?count=12` – szereg czasowy wyników operacyjnych (N ostatnich okresów) do wykresów.
+- **MAUI:** Zakładka **Pracownicy** – lista, dodawanie/edycja/usuwanie z wyborem działu (GET /api/v1/departments).
+- **MAUI:** Zakładka **Reguły premii** – lista reguł, CRUD (dział, typ formuły, ParametersJson, IsActive).
+- **MAUI:** Wykres trendu (Przychody/Koszty/Zysk) na Dashboardzie i w Raportach – ostatnie 6/12 okresów (LiveCharts2); na Windows wyświetlany jest komunikat „Wykresy niedostępne na Windows”.
+- **MAUI:** Wykres kołowy „Przychody per kanał” w Raportach (dla wybranego okresu).
+- **MAUI:** Picker wyboru okresu na Dashboardzie; KPI w ramkach; wskaźniki ładowania (ActivityIndicator) przy raportach i wykresach.
+- **Konfiguracja:** Zadanie `build-maui` i konfiguracja uruchomienia „NetCore.Maui (Windows)” w Cursorze; rozszerzona instrukcja uruchomienia (sekcja 5.3).
+
+### Fixed
+
+- **MAUI (Windows):** Czarny / gradientowy ekran – wyłączenie systemowego tła (Mica), wymuszenie białego tła okna; wyłączenie LiveCharts na Windows (wykresy zastąpione komunikatem).
+- **MAUI (Windows):** Błędy inicjalizacji – komunikaty błędów wyświetlane na tej samej stronie (bez zamiany okna); zabezpieczenie zamiany strony (try/catch).
+- **MAUI:** Zamiana przestarzałych `DisplayAlert` na `DisplayAlertAsync` (usunięcie ostrzeżeń CS0618).
+
 ## [1.0.1] - 2026-02-07
 
 ### Fixed
@@ -56,7 +74,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - (Placeholder for first stable release)
 
-[Unreleased]: https://github.com/CtrlAltStudent/NetCore/compare/v1.0.1...HEAD
+[Unreleased]: https://github.com/CtrlAltStudent/NetCore/compare/v1.0.2...HEAD
+[1.0.2]: https://github.com/CtrlAltStudent/NetCore/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/CtrlAltStudent/NetCore/compare/v0.9.0-beta.1...v1.0.1
 [0.9.0-beta.1]: https://github.com/CtrlAltStudent/NetCore/releases/tag/v0.9.0-beta.1
 [0.9.0]: https://github.com/CtrlAltStudent/NetCore/compare/v0.9.0-beta.1...v0.9.0

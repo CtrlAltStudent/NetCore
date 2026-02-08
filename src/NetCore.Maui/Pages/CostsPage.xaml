@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="NetCore.Maui.Pages.CostsPage"
+             Title="Koszty">
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Dodaj" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="Auto,Auto,*">
+        <Picker x:Name="PeriodPicker" Title="Okres" Grid.Row="0" Margin="20,8" SelectedIndexChanged="OnPeriodChanged" />
+        <Label Grid.Row="1" x:Name="MessageLabel" Text="" IsVisible="False" Margin="20,4" />
+        <CollectionView x:Name="List" Grid.Row="2" Margin="20,0" SelectionChanged="OnSelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="12" Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                <Label Text="{Binding DisplayText}" FontSize="14" />
+                                <Label Text="{Binding TypeText}" FontSize="12" Opacity="0.7" />
+                            </VerticalStackLayout>
+                            <Button Grid.Column="1" Text="Edytuj" Clicked="OnEditClicked" />
+                            <Button Grid.Column="2" Text="Usuń" BackgroundColor="Red" TextColor="White" Clicked="OnDeleteClicked" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

@@ -3,14 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="NetCore.Maui.Pages.DepartmentsPage"
              Title="Działy">
-
-    <CollectionView x:Name="List" Margin="20">
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <Frame Padding="12" Margin="0,4">
-                    <Label Text="{Binding Name}" FontSize="16" />
-                </Frame>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Dodaj" Clicked="OnAddClicked" />
+    </ContentPage.ToolbarItems>
+    <Grid RowDefinitions="Auto,*">
+        <Label Grid.Row="0" x:Name="MessageLabel" Text="" IsVisible="False" Margin="20,8" />
+        <CollectionView x:Name="List" Grid.Row="1" Margin="20,0" SelectionChanged="OnSelectionChanged">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Frame Padding="12" Margin="0,4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0" Text="{Binding Name}" FontSize="16" VerticalOptions="Center" />
+                            <Button Grid.Column="1" Text="Usuń" BackgroundColor="Red" TextColor="White"
+                                    Clicked="OnDeleteClicked" />
+                        </Grid>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>
